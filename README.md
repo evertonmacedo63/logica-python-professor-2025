@@ -1,4 +1,5 @@
-# logica-python-professor-2025
+# Repositório para os alunos do 2E leopoldo santana
+# logica-python- Redes e SI -professor-2025
 # para testes e uso com alunos do 2º E - Leopoldo Santana
 # 📘 Lógica com Python — Repositório do Professor
 
