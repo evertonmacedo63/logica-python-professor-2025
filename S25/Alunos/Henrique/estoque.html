@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Estoque</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .estoque {
+      margin-top: 20px;
+    }
+    .produto {
+      margin-bottom: 10px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px;
+      cursor: pointer;
+    }
+    input {
+      margin: 5px;
+      padding: 5px;
+    }
+    canvas {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📦 Sistema de Estoque</h1>
+
+  <div id="menu">
+    <button onclick="exibirEstoque()">Exibir Estoque</button>
+    <button onclick="mostrarVenda()">Registrar Venda</button>
+    <button onclick="mostrarAdicao()">Adicionar ao Estoque</button>
+    <button onclick="mostrarGrafico()">📊 Ver gráfico de vendas</button>
+  </div>
+
+  <div id="interface" class="estoque"></div>
+  <canvas id="graficoVendas" width="400" height="200"></canvas>
+
+  <script>
+    const estoque = [
+      { nome: "Arroz", quantidade: 20 },
+      { nome: "Feijão", quantidade: 15 },
+      { nome: "Macarrão", quantidade: 10 },
+      { nome: "Sabão", quantidade: 30 },
+      { nome: "Detergente", quantidade: 5 }
+    ];
+
+    const vendas = [0, 0, 0, 0, 0];
+    let grafico = null;
+
+    function exibirEstoque() {
+      let html = "<h2>Estoque Atual:</h2>";
+      estoque.forEach((item, i) => {
+        html += `<div class="produto">${i + 1} - ${item.nome}: ${item.quantidade} unidades</div>`;
+      });
+      document.getElementById("interface").innerHTML = html;
+    }
+
+    function mostrarVenda() {
+      document.getElementById("interface").innerHTML = `
+        <h2>Registrar Venda</h2>
+        <label>Produto (1 a 5): <input type="number" id="produtoVenda"></label><br>
+        <label>Quantidade: <input type="number" id="quantidadeVenda"></label><br>
+        <button onclick="registrarVenda()">Confirmar Venda</button>
+      `;
+    }
+
+    function registrarVenda() {
+      const produto = parseInt(document.getElementById("produtoVenda").value);
+      const quantidade = parseInt(document.getElementById("quantidadeVenda").value);
+      if (produto >= 1 && produto <= 5) {
+        const item = estoque[produto - 1];
+        if (item.quantidade >= quantidade) {
+          item.quantidade -= quantidade;
+          vendas[produto - 1] += quantidade;
+          alert(`✅ Você vendeu ${quantidade} unidades de ${item.nome}.`);
+        } else {
+          alert(`❌ Estoque insuficiente de ${item.nome}!`);
+        }
+      } else {
+        alert("❌ Produto inválido!");
+      }
+      exibirEstoque();
+      mostrarGrafico();
+    }
+
+    function mostrarAdicao() {
+      document.getElementById("interface").innerHTML = `
+        <h2>Adicionar ao Estoque</h2>
+        <label>Produto (1 a 5): <input type="number" id="produtoAdicao"></label><br>
+        <label>Quantidade: <input type="number" id="quantidadeAdicao"></label><br>
+        <button onclick="adicionarEstoque()">Confirmar Adição</button>
+      `;
+    }
+
+    function adicionarEstoque() {
+      const produto = parseInt(document.getElementById("produtoAdicao").value);
+      const quantidade = parseInt(document.getElementById("quantidadeAdicao").value);
+      if (produto >= 1 && produto <= 5) {
+        const item = estoque[produto - 1];
+        item.quantidade += quantidade;
+        alert(`✅ Adicionadas ${quantidade} unidades de ${item.nome} ao estoque.`);
+      } else {
+        alert("❌ Produto inválido!");
+      }
+      exibirEstoque();
+    }
+
+    function mostrarGrafico() {
+      const ctx = document.getElementById("graficoVendas").getContext("2d");
+      if (grafico) grafico.destroy();
+      grafico = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: estoque.map(item => item.nome),
+          datasets: [{
+            label: "Unidades Vendidas",
+            data: vendas,
+            backgroundColor: "rgba(75, 192, 192, 0.6)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // Exibe estoque ao carregar
+    exibirEstoque();
+  </script>
+
+</body>
+</html>
