@@ -1,0 +1,22 @@
+def gerar_vetor_dobro(valor_inicial, tamanho=10):
+    vetor = [valor_inicial]
+    for _ in range(1, tamanho):
+        vetor.append(vetor[-1] * 2)
+    return vetor
+
+def exibir_vetor(vetor):
+    for i, valor in enumerate(vetor):
+        print(f"N[{i}] = {valor}")
+
+def main():
+    try:
+        V = int(input("Digite um valor inteiro (até 50): "))
+        if V > 50 or V < 0:
+            print("Valor fora do intervalo permitido (0 a 50).")
+            return
+        vetor = gerar_vetor_dobro(V)
+        exibir_vetor(vetor)
+    except ValueError:
+        print("Entrada inválida. Digite um número inteiro.")
+
+main()
